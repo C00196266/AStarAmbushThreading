@@ -87,7 +87,7 @@
     <Link>
       <AdditionalLibraryDirectories>$(ProjectDir)SDL2\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -119,14 +119,22 @@
   <ItemGroup>
     <ClCompile Include="Arc.cpp" />
     <ClCompile Include="AStar.cpp" />
+    <ClCompile Include="BaseObject.cpp" />
+    <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="NodeLayout.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Arc.h" />
     <ClInclude Include="AStar.h" />
+    <ClInclude Include="BaseObject.h" />
+    <ClInclude Include="EventListener.h" />
+    <ClInclude Include="InputHandler.h" />
+    <ClInclude Include="Vector2f.h" />
+    <ClInclude Include="World.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="NodeCostComparer.h" />
     <ClInclude Include="NodeLayout.h" />
