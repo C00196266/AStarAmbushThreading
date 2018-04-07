@@ -1,6 +1,6 @@
 #include "BaseObject.h"
 
-BaseObject::BaseObject(Vector2f pos, int width, int height, SDL_Color colour) {
+BaseObject::BaseObject(Vector pos, int width, int height, SDL_Color colour) {
 	m_pos = pos;
 
 	m_rect.x = (int)pos.x;
@@ -21,10 +21,10 @@ void BaseObject::setPos(float x, float y) {
 	m_pos.y = y;
 }
 
-void BaseObject::setPos(Vector2f pos) {
+void BaseObject::setPos(Vector pos) {
 	m_pos = pos;
 }
 
-Vector2f BaseObject::getPos() {
+Vector BaseObject::getPos() {
 	return m_pos;
 }

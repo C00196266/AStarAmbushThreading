@@ -8,14 +8,16 @@
 class Node {
 public:
 	Node() {}
-	Node(Vector pos, int id);
+	//Node(Vector pos, int id);
+	Node(Vector pos, std::string id);
 
 	void addArc(Node *n);
 	float calculateArcWeight(Vector otherNodePos);
 
 	Vector getPos();
 
-	int getID();
+	//int getID();
+	std::string getID();
 
 	bool getMarked();
 	void setMarked(bool marked);
@@ -32,7 +34,8 @@ public:
 	std::list<Arc>& getArcs();
 
 private:
-	int m_id;
+	//int m_id;
+	std::string m_id;
 
 	Vector m_pos;
 

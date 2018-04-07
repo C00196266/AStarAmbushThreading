@@ -1,15 +1,14 @@
 #include "NodeLayout.h"
 
 NodeLayout::NodeLayout(std::vector<Vector> &nodeData) {
-	//m_noOfNodes = nodeData.size() + 1;
 	m_noOfNodes = nodeData.size();
 
 	m_nodes = new Node*[m_noOfNodes];
 
-	for (int i = 0; i < m_noOfNodes; i++) {
-		m_nodes[i] = new Node(nodeData.at(i), i);
-		m_nodes[i]->setMarked(false);
-	}
+	//for (int i = 0; i < m_noOfNodes; i++) {
+	//	m_nodes[i] = new Node(nodeData.at(i), i);
+	//	m_nodes[i]->setMarked(false);
+	//}
 
 	addArcs();
 }

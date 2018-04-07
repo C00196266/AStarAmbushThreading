@@ -2,7 +2,7 @@
 
 #include "InputHandler.h"
 #include "NodeLayout.h"
-#include "BaseObject.h"
+#include "Tile.h"
 
 class World {
 public:
@@ -12,7 +12,9 @@ public:
 	void draw(SDL_Renderer *renderer);
 
 private:
-	BaseObject test;
+	std::vector<Tile*> m_tiles;
 
 	NodeLayout m_layout;
+
+	void setupWorld();
 };
