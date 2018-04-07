@@ -9,14 +9,8 @@ Tile::Tile(Vector pos, int width, int height, SDL_Color colour, std::string id) 
 	m_rect.h = height;
 
 	m_colour = colour;
-
-	m_node = new Node(pos, id);
 }
 
 std::string Tile::getID() {
 	return m_id;
-}
-
-Node* Tile::getNode() {
-	return m_node;
 }

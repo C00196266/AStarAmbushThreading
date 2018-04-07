@@ -8,7 +8,7 @@ int main(int argc, char* argv[]) {
 	EventListener *eventListener = new EventListener;
 
 	InputHandler input(eventListener);
-	World world;
+	World world(eventListener);
 
 	bool running = true;
 

@@ -10,10 +10,6 @@ public:
 
 	std::string getID();
 
-	Node* getNode();
-
 private:
 	std::string m_id;
-
-	Node *m_node;
 };

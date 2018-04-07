@@ -9,16 +9,24 @@
 class NodeLayout {
 public:
 	NodeLayout() {}
-	NodeLayout(std::vector<Vector> &nodeData);
+	//NodeLayout(std::vector<Vector> &nodeData);
+
+	void addNode(Vector pos, std::string id);
+
+	void setNodesPerLine(int num);
 
 	int getNoOfNodes();
 
-	Node** getNodes();
+	std::vector<Node*> getNodes();
 
 private:
-	Node** m_nodes; // pointer to array of pointers to nodes
+	std::vector<Node*> m_nodes;
 
-	int m_noOfNodes;
+	int m_nodesPerLine;
 
-	void addArcs(); // adds connections between nodes
+	//Node** m_nodes; // pointer to array of pointers to nodes
+	//
+	//int m_noOfNodes;
+	//
+	//void addArcs(); // adds connections between nodes
 };
