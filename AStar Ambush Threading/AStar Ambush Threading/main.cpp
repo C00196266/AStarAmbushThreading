@@ -10,6 +10,9 @@ int main(int argc, char* argv[]) {
 	InputHandler input(eventListener);
 	World world(eventListener);
 
+	SDL_Thread* threadA = SDL_CreateThread(playerWallCollisions, "Thread A", (void*)"Thread A");
+	SDL_Thread* threadB = SDL_CreateThread(playerWallCollisions, "Thread B", (void*)"Thread B");
+
 	bool running = true;
 
 	const float FPS = 60;
@@ -23,18 +26,17 @@ int main(int argc, char* argv[]) {
 
 		deltaTime = (currentTime - lastTime) / 1000;
 
-		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-		SDL_RenderClear(renderer);
-
 		if (deltaTime > timePerFrame) {
+			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+			SDL_RenderClear(renderer);
+
 			input.handleInput(e);
 
+			world.draw(renderer);
 			world.update(deltaTime);
 
 			lastTime = currentTime;
 		}
-
-		world.draw(renderer);
 
 		SDL_RenderPresent(renderer);
 	}

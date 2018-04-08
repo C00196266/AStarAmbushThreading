@@ -19,12 +19,22 @@ void BaseObject::draw(SDL_Renderer *renderer) {
 void BaseObject::setPos(float x, float y) {
 	m_pos.x = x;
 	m_pos.y = y;
+
+	m_rect.x = x;
+	m_rect.y = y;
 }
 
 void BaseObject::setPos(Vector pos) {
 	m_pos = pos;
+
+	m_rect.x = pos.x;
+	m_rect.y = pos.y;
 }
 
 Vector BaseObject::getPos() {
 	return m_pos;
+}
+
+SDL_Rect BaseObject::getRect() {
+	return m_rect;
 }

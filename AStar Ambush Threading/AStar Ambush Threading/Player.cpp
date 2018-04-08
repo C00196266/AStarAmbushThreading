@@ -16,19 +16,33 @@ Player::Player(Vector pos, int width, int height, SDL_Color colour, EventListene
 }
 
 void Player::update(float deltaTime) {
+	m_vel = { 0, 0 };
+
 	if (m_listener->pressedA || m_listener->pressedLeft) {
-		m_pos.x -= 50 * deltaTime;
+		m_vel.x = -50 * deltaTime;
 	}
 	if (m_listener->pressedD || m_listener->pressedRight) {
-		m_pos.x += 50 * deltaTime;
+		m_vel.x = 50 * deltaTime;
 	}
 	if (m_listener->pressedW || m_listener->pressedUp) {
-		m_pos.y -= 50 * deltaTime;
+		m_vel.y = -50 * deltaTime;
 	}
 	if (m_listener->pressedS || m_listener->pressedDown) {
-		m_pos.y += 50 * deltaTime;
+		m_vel.y = 50 * deltaTime;
 	}
+
+	m_pos.x += m_vel.x;
+	m_pos.y += m_vel.y;
 
 	m_rect.x = (int)m_pos.x;
 	m_rect.y = (int)m_pos.y;
+}
+
+Vector Player::getVel() {
+	return m_vel;
+}
+
+void Player::setVel(float x, float y) {
+	m_vel.x = x;
+	m_vel.y = y;
 }

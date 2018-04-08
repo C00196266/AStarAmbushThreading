@@ -12,7 +12,7 @@ public:
 	void setPos(Vector pos);
 	Vector getPos();
 
-	void update(float deltaTime);
+	SDL_Rect getRect();
 
 	void draw(SDL_Renderer *renderer);
 

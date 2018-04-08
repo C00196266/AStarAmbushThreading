@@ -1,8 +1,18 @@
 #include "World.h"
 
+SDL_sem *lock;
+int data;
+Player* player;
+std::vector<Tile*>* tiles;
+
 World::World(EventListener *listener) {
 	setupWorld();
 	m_player = Player{ Vector{20, 20},  5, 5, SDL_Color{ 100, 100, 200, 255 }, listener};
+
+	lock = SDL_CreateSemaphore(1);
+	data = -1;
+	player = &m_player;
+	tiles = &m_tiles;
 }
 
 void World::update(float deltaTime) {
@@ -77,27 +87,72 @@ void World::setupWorld() {
 				m_tiles.push_back(new Tile(Vector{ i * 5.0f, j * 5.0f }, 5, 5, SDL_Color{ 0, 0, 0, 255 }, "Wall"));
 				m_layout.addNode(Vector{ i * 5.0f, j * 5.0f }, "Wall");
 			}
-			else if (i > 40 && i <= 55) {
-				if (j > 0 && j <= 125) {
-					m_tiles.push_back(new Tile(Vector{ i * 5.0f, j * 5.0f }, 5, 5, SDL_Color{ 0, 0, 0, 255 }, "Wall"));
-					m_layout.addNode(Vector{ i * 5.0f, j * 5.0f }, "Wall");
-				}
+			else if (i > 40 && i <= 55 && j > 0 && j <= 125) {
+				m_tiles.push_back(new Tile(Vector{ i * 5.0f, j * 5.0f }, 5, 5, SDL_Color{ 0, 0, 0, 255 }, "Wall"));
+				m_layout.addNode(Vector{ i * 5.0f, j * 5.0f }, "Wall");
 			}
-			else if (i > 110 && i <= 125) {
-				if (j > 10 && j <= 135) {
-					m_tiles.push_back(new Tile(Vector{ i * 5.0f, j * 5.0f }, 5, 5, SDL_Color{ 0, 0, 0, 255 }, "Wall"));
-					m_layout.addNode(Vector{ i * 5.0f, j * 5.0f }, "Wall");
-				}
+			else if (i > 110 && i <= 125 && j > 10 && j <= 135) {
+				m_tiles.push_back(new Tile(Vector{ i * 5.0f, j * 5.0f }, 5, 5, SDL_Color{ 0, 0, 0, 255 }, "Wall"));
+				m_layout.addNode(Vector{ i * 5.0f, j * 5.0f }, "Wall");
 			}
-			else if (i > 180 && i <= 195) {
-				if (j >= 5 && j <= 110) {
-					m_tiles.push_back(new Tile(Vector{ i * 5.0f, j * 5.0f }, 5, 5, SDL_Color{ 0, 0, 0, 255 }, "Wall"));
-					m_layout.addNode(Vector{ i * 5.0f, j * 5.0f }, "Wall");
-				}
+			else if (i > 180 && i <= 195 && j >= 5 && j <= 110) {
+				m_tiles.push_back(new Tile(Vector{ i * 5.0f, j * 5.0f }, 5, 5, SDL_Color{ 0, 0, 0, 255 }, "Wall"));
+				m_layout.addNode(Vector{ i * 5.0f, j * 5.0f }, "Wall");
 			}
 			else {
 				m_layout.addNode(Vector{ i * 5.0f, j * 5.0f }, "Floor");
 			}
 		}
 	}
+}
+
+int playerWallCollisions(void* temp) {
+	int index = -1;
+
+	while (true) {
+		srand(SDL_GetTicks());
+		//Lock
+		SDL_SemWait(lock);
+		
+		data++;
+		
+		if (data >= tiles->size()) {
+			data = 0;
+		}
+		
+		index = data;
+		
+		if (index >= tiles->size()) {
+			index = 0;
+		}
+		
+		////Unlock
+		SDL_SemPost(lock);
+		
+		// collision
+		SDL_Rect holder = { 0, 0, 0, 0 };
+
+		if (SDL_IntersectRect(&player->getRect(), &tiles->at(index)->getRect(), &holder)) {
+			if (holder.w > holder.h) {
+				if (player->getPos().y > tiles->at(index)->getPos().y) {
+					player->setPos(player->getPos().x, player->getRect().y + holder.h);
+				}
+				else {
+					player->setPos(player->getPos().x, player->getRect().y - holder.h);
+				}
+				player->setVel(player->getVel().x, 0);
+			}
+			else {
+				if (player->getPos().x > tiles->at(index)->getPos().x) {
+					player->setPos(player->getRect().x + holder.w, player->getPos().y);
+				}
+				else {
+					player->setPos(player->getRect().x - holder.w, player->getPos().y);
+				}
+				player->setVel(0, player->getVel().y);
+			}
+		}
+	}
+
+	return 0;
 }

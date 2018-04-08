@@ -5,6 +5,14 @@
 #include "Tile.h"
 #include "Player.h"
 
+// these need to be global, due to SDL threads taking C style functions as arguments, as opposed to C++ member functions
+
+extern int playerWallCollisions(void* data);
+extern SDL_sem *lock;
+extern int data;
+extern Player* player;
+extern std::vector<Tile*>* tiles;
+
 class World {
 public:
 	World() {}
