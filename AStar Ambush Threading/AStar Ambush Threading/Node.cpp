@@ -14,11 +14,12 @@ void Node::addArc(Node *n) {
 	Arc arc;
 
 	arc.setNode(n);
+
 	if (n->getID() == "Floor") {
 		arc.setWeight(1);
 	}
 	else if (n->getID() == "Wall") {
-		arc.setWeight(1000);
+		arc.setWeight(10000);
 	}
 
 	m_arcs.push_back(arc);

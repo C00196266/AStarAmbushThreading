@@ -43,7 +43,7 @@ private:
 
 	bool m_marked; // if the node has been visited
 
-	Node *m_previous; // pointer to previous node
+	Node* m_previous; // pointer to previous node
 
 	float m_cost;
 	float m_heuristic;

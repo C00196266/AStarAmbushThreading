@@ -10,6 +10,6 @@ public:
 
 	void handleInput(SDL_Event *e);
 private:
-	EventListener *m_eventListener;
+	EventListener* m_eventListener;
 	//SDL_Event *m_event;
 };

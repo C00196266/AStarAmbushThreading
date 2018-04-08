@@ -13,7 +13,7 @@ public:
 
 	void update(float deltaTime);
 private:
-	EventListener *m_listener;
+	EventListener* m_listener;
 
 	Vector m_vel;
 };

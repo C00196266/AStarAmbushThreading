@@ -12,5 +12,5 @@ public:
 	void worker(void* data);
 private:
 	int m_noOfThreads;
-	SDL_sem *m_lock;
+	SDL_sem* m_lock;
 };

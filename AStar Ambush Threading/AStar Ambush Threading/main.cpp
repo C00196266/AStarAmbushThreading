@@ -10,8 +10,8 @@ int main(int argc, char* argv[]) {
 	InputHandler input(eventListener);
 	World world(eventListener);
 
-	SDL_Thread* threadA = SDL_CreateThread(playerWallCollisions, "Thread A", (void*)"Thread A");
-	SDL_Thread* threadB = SDL_CreateThread(playerWallCollisions, "Thread B", (void*)"Thread B");
+	SDL_Thread* threadA = SDL_CreateThread(collisions, "Thread A", (void*)"Thread A");
+	SDL_Thread* threadB = SDL_CreateThread(collisions, "Thread B", (void*)"Thread B");
 
 	bool running = true;
 

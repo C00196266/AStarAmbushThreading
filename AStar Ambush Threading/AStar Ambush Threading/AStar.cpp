@@ -146,3 +146,6 @@ void AStar::ucs(Node* start, Node* dest, std::vector<Node*>& path) {
 	}
 }
 
+NodeLayout& AStar::getLayout() {
+	return m_nodeLayout;
+}

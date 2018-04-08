@@ -1,9 +1,11 @@
 #include "World.h"
 
-SDL_sem *lock;
-int data;
+SDL_sem* lock;
+int wallData;
+int npcData;
 Player* player;
 std::vector<Tile*>* tiles;
+std::vector<NPC*>* npcs;
 
 World::World(EventListener *listener) {
 	setupWorld();
@@ -13,10 +15,15 @@ World::World(EventListener *listener) {
 	//m_player = Player{ Vector{20, 20},  5, 5, SDL_Color{ 100, 100, 200, 255 }, listener};
 	m_player = Player{ Vector{ 20, 20 },  20, 20, SDL_Color{ 100, 100, 200, 255 }, listener };
 
+	for (int i = 0; i < 25; i++) {
+		m_NPCs.push_back(new NPC(Vector{ 1200, 600 }, 20, 20, SDL_Color{ 200, 100, 100, 255 }, m_layout, &m_player.getPos()));
+	}
+
 	lock = SDL_CreateSemaphore(1);
-	data = -1;
+	wallData = -1;
 	player = &m_player;
 	tiles = &m_tiles;
+	npcs = &m_NPCs;
 }
 
 void World::update(float deltaTime) {
@@ -28,7 +35,11 @@ void World::draw(SDL_Renderer *renderer) {
 		m_tiles.at(i)->draw(renderer);
 	}
 
-	m_layout.draw(renderer);
+	for (int i = 0; i < m_NPCs.size(); i++) {
+		m_NPCs.at(i)->draw(renderer);
+	}
+
+	//m_layout.draw(renderer);
 
 	m_player.draw(renderer);
 }
@@ -60,7 +71,7 @@ void World::setupWorld() {
 				m_tiles.push_back(new Tile(Vector{ i * 20.0f, j * 20.0f }, 20, 20, SDL_Color{ 0, 0, 0, 255 }, "Wall"));
 				m_layout.addNode(Vector{ i * 20.0f, j * 20.0f }, "Wall");
 			}
-			else if (i > 180 / 4 && i <= 195 / 4 && j >= 5 / 4 && j <= 110 / 4) {
+			else if (i > 180 / 4 && i <= 195 / 4 && j > 20 / 4 && j <= 110 / 4) {
 				m_tiles.push_back(new Tile(Vector{ i * 20.0f, j * 20.0f }, 20, 20, SDL_Color{ 0, 0, 0, 255 }, "Wall"));
 				m_layout.addNode(Vector{ i * 20.0f, j * 20.0f }, "Wall");
 			}
@@ -106,23 +117,36 @@ void World::setupWorld() {
 	//}
 }
 
-int playerWallCollisions(void*) {
-	int index = -1;
+int collisions(void*) {
+	int wallIndex = -1;
+	int npcIndex = -1;
 
 	while (true) {
 		//Lock
 		SDL_SemWait(lock);
 		
-		data++;
+		wallData++;
 		
-		if (data >= tiles->size()) {
-			data = 0;
+		if (wallData >= tiles->size()) {
+			wallData = 0;
 		}
 		
-		index = data;
+		wallIndex = wallData;
 		
-		if (index >= tiles->size()) {
-			index = 0;
+		if (wallIndex >= tiles->size()) {
+			wallIndex = 0;
+		}
+
+		npcData++;
+
+		if (npcData >= npcs->size()) {
+			npcData++;
+		}
+
+		npcIndex = npcData;
+
+		if (npcIndex >= npcs->size()) {
+			npcIndex = 0;
 		}
 		
 		//Unlock
@@ -131,9 +155,9 @@ int playerWallCollisions(void*) {
 		// collision
 		SDL_Rect holder = { 0, 0, 0, 0 };
 
-		if (SDL_IntersectRect(&player->getRect(), &tiles->at(index)->getRect(), &holder)) {
+		if (SDL_IntersectRect(&player->getRect(), &tiles->at(wallIndex)->getRect(), &holder)) {
 			if (holder.w > holder.h) {
-				if (player->getPos().y > tiles->at(index)->getPos().y) {
+				if (player->getPos().y > tiles->at(wallIndex)->getPos().y) {
 					player->setPos(player->getPos().x, player->getRect().y + holder.h);
 				}
 				else {
@@ -142,7 +166,7 @@ int playerWallCollisions(void*) {
 				player->setVel(player->getVel().x, 0);
 			}
 			else {
-				if (player->getPos().x > tiles->at(index)->getPos().x) {
+				if (player->getPos().x > tiles->at(wallIndex)->getPos().x) {
 					player->setPos(player->getRect().x + holder.w, player->getPos().y);
 				}
 				else {
@@ -150,6 +174,10 @@ int playerWallCollisions(void*) {
 				}
 				player->setVel(0, player->getVel().y);
 			}
+		}
+
+		if (SDL_IntersectRect(&player->getRect(), &npcs->at(npcIndex)->getRect(), &holder)) {
+			std::cout << "LUL" << std::endl;
 		}
 	}
 

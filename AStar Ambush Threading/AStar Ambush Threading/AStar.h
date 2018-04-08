@@ -11,6 +11,8 @@ public:
 
 	void calculatePath(Node* pStart, Node* pDest, std::vector<Node*>& path);
 
+	NodeLayout& getLayout();
+
 private:
 	NodeLayout &m_nodeLayout;
 
