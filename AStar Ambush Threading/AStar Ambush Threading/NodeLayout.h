@@ -19,6 +19,10 @@ public:
 
 	std::vector<Node*> getNodes();
 
+	void draw(SDL_Renderer *renderer);
+
+	void addArcs(); // adds connections between nodes
+
 private:
 	std::vector<Node*> m_nodes;
 

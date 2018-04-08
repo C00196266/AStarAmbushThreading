@@ -33,6 +33,8 @@ public:
 
 	std::list<Arc>& getArcs();
 
+	void draw(SDL_Renderer *renderer);
+
 private:
 	//int m_id;
 	std::string m_id;

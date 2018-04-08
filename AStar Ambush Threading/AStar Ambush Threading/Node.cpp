@@ -14,13 +14,14 @@ void Node::addArc(Node *n) {
 	Arc arc;
 
 	arc.setNode(n);
-	arc.setWeight(calculateArcWeight(n->getPos()));
+	if (n->getID() == "Floor") {
+		arc.setWeight(1);
+	}
+	else if (n->getID() == "Wall") {
+		arc.setWeight(1000);
+	}
 
 	m_arcs.push_back(arc);
-}
-
-float Node::calculateArcWeight(Vector otherNodePos) {
-	return sqrt(((otherNodePos.x - m_pos.x) * (otherNodePos.x - m_pos.x)) + ((otherNodePos.y - m_pos.y) * (otherNodePos.y - m_pos.y)));
 }
 
 Vector Node::getPos() {
@@ -69,4 +70,24 @@ void Node::setCost(float cost) {
 
 std::list<Arc>& Node::getArcs() {
 	return m_arcs;
+}
+
+void Node::draw(SDL_Renderer *renderer) {
+	//SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+	//SDL_RenderDrawPoint(renderer, m_pos.x, m_pos.y);
+	//
+	//SDL_SetRenderDrawColor(renderer, 255, 0, 140, 255);
+	//
+	//for (std::list<Arc>::iterator i = m_arcs.begin(); i != m_arcs.end(); i++) {
+	//	SDL_RenderDrawLine(renderer, m_pos.x, m_pos.y, (*i).getNode()->getPos().x, (*i).getNode()->getPos().y);
+	//}
+
+	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+	SDL_RenderDrawPoint(renderer, m_pos.x + 10, m_pos.y + 10);
+
+	SDL_SetRenderDrawColor(renderer, 255, 0, 140, 255);
+
+	for (std::list<Arc>::iterator i = m_arcs.begin(); i != m_arcs.end(); i++) {
+		SDL_RenderDrawLine(renderer, m_pos.x + 10, m_pos.y + 10, (*i).getNode()->getPos().x + 10, (*i).getNode()->getPos().y + 10);
+	}
 }

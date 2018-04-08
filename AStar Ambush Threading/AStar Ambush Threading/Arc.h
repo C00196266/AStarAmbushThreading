@@ -7,13 +7,13 @@ class Arc {
 public:
 	Arc() {}
 
-	//float getWeight();
-
 	void setNode(Node *n);
 	Node* getNode();
 
 	void setWeight(float w);
 	float getWeight();
+
+	void drawLine(SDL_Renderer *renderer, Vector pos);
 
 private:
 	Node *m_node;
