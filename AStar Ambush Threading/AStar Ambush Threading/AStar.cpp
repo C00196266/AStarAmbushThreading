@@ -1,52 +1,66 @@
 #include "AStar.h"
 
-AStar::AStar(NodeLayout &nodes) : m_nodeLayout(nodes){
-
+AStar::AStar() {
+	m_nodeLayout = new NodeLayout;
+	m_changedNode = false;
 }
 
-void AStar::calculatePath(Node* start, Node* dest, std::vector<Node*>& path) {
-	if (start != NULL) {
-		// computes the actual cost of each path from dest to start
-		ucs(dest, start, path);
+void AStar::update() {
+	if (m_changedNode == true) {
+		m_changedNode = false;
+	}
 
-		for (int i = 0; i < m_nodeLayout.getNoOfNodes() - 1; i++) {
-			// calculates the heuristic of each node using the actual cost
-			m_nodeLayout.getNodes()[i]->setHeuristic(m_nodeLayout.getNodes()[i]->getCost() * 0.9);
+	int indexClosestToPlayer = 0;
+	float closestDistPlayer = 99999;
 
-			// sets cost to infinity
-			m_nodeLayout.getNodes()[i]->setCost(99999);
+	for (int i = 0; i < m_nodeLayout->getNoOfNodes(); i++) {
+		float distPlayer = magnitude(m_nodeLayout->getNodes().at(i)->getPos(), m_player->getPos());
+
+		if (distPlayer < closestDistPlayer) {
+			closestDistPlayer = distPlayer;
+			indexClosestToPlayer = i;
+		}
+	}
+
+	if (m_nodeLayout->getNodes().at(m_nodeNearestToPLayer) != m_start) {
+		m_start = m_nodeLayout->getNodes().at(m_nodeNearestToPLayer);
+		m_changedNode = true;
+	}
+}
+
+void AStar::calculatePath(Node *dest, std::vector<Node*>& path) {
+	if (m_start == NULL) {
+		m_start = m_nodeLayout->getNodes().at(0);
+	}
+
+	if (m_start != NULL) {
+		ucs(dest, m_start, path);
+
+		for (int i = 0; i < m_nodeLayout->getNoOfNodes() - 1; i++) {
+			m_nodeLayout->getNodes()[i]->setHeuristic(m_nodeLayout->getNodes()[i]->getCost() * 0.9);
+			m_nodeLayout->getNodes()[i]->setCost(99999);
 		}
 
-		// sets up priority queue that compares the total cost and heuristic cost
 		std::priority_queue<Node*, std::vector<Node*>, NodeSearchCostComparerAStar> priorityQueue;
 
-		// set the cost to reach the start to be 0
-		start->setCost(0);
+		m_start->setCost(0);
+		m_start->setMarked(true);
 
-		// push the starting node to the queue and set it as marked
-		priorityQueue.push(start);
-		start->setMarked(true);
+		priorityQueue.push(m_start);
 
-		// if there are nodes still in the queue and the top of the queue is not the destination
 		while (priorityQueue.size() != 0 && priorityQueue.top() != dest) {
-			// add all of the child nodes of the parent node in the top of the queue, that have not been marked, into the queue
-			// iterate through the list of arcs of the parent node
 			auto iter = priorityQueue.top()->getArcs().begin();
 			auto endIter = priorityQueue.top()->getArcs().end();
 
 			for (; iter != endIter; iter++) {
-				// adds the weight of the top of the queue to the weight of the the arc that it is looking at
 				float distC = priorityQueue.top()->getCost() + (*iter).getWeight();
 
-				// if this is less than the node weight of the node it is looking at
 				if (distC < (*iter).getNode()->getCost()) {
 					(*iter).getNode()->setCost(distC);
-					// sets the top of the queue to be the previous node of this node
 					(*iter).getNode()->setPrevious(priorityQueue.top());
 				}
 
 				if ((*iter).getNode()->getMarked() == false) {
-					// mark the node and add it to the queue - puts priority on the shortest path
 					priorityQueue.push((*iter).getNode());
 					(*iter).getNode()->setMarked(true);
 				}
@@ -59,63 +73,50 @@ void AStar::calculatePath(Node* start, Node* dest, std::vector<Node*>& path) {
 							path.clear();
 						}
 
-						while (temp != start) {
+						while (temp != m_start) {
 							path.push_back(temp);
-							temp = temp->getPrevious(); // goes back to the previous node until it reaches the initial node
+							temp = temp->getPrevious();
 						}
-						path.push_back(start);
+						path.push_back(m_start);
 					}
 				}
 			}
 
-			priorityQueue.pop(); // occasionally throws exception while in debug, but not in release (c++ STL re-heap issue)
+			priorityQueue.pop(); // occasionally throws exception in debug
 		}
 	}
 
-	// resets nodes
-	for (int i = 0; i < m_nodeLayout.getNoOfNodes() - 1; i++) {
-		m_nodeLayout.getNodes()[i]->setMarked(false);
+	for (int i = 0; i < m_nodeLayout->getNoOfNodes() - 1; i++) {
+		m_nodeLayout->getNodes()[i]->setMarked(false);
 	}
 }
 
-void AStar::ucs(Node* start, Node* dest, std::vector<Node*>& path) {
+void AStar::ucs(Node *start, Node *dest, std::vector<Node*>& path) {
 	if (start != NULL) {
-		for (int i = 0; i < m_nodeLayout.getNoOfNodes() - 1; i++) {
-			// sets cost to infinity
-			m_nodeLayout.getNodes()[i]->setCost(99999);
+		for (int i = 0; i < m_nodeLayout->getNoOfNodes() - 1; i++) {
+			m_nodeLayout->getNodes()[i]->setCost(99999);
 		}
 
-		// sets up priority queue that compares the total cost and heuristic cost
 		std::priority_queue<Node*, std::vector<Node*>, NodeSearchCostComparerUCS> priorityQueue;
 
-		// set the cost to reach the start to be 0
 		start->setCost(0);
-
-		// push the starting node to the queue and set it as marked
-		priorityQueue.push(start);
 		start->setMarked(true);
 
-		// if there are nodes still in the queue and the top of the queue is not the destination
+		priorityQueue.push(start);
+
 		while (priorityQueue.size() != 0 && priorityQueue.top() != dest) {
-			// add all of the child nodes of the parent node in the top of the queue, that have not been marked, into the queue
-			// iterate through the list of arcs of the parent node
 			auto iter = priorityQueue.top()->getArcs().begin();
 			auto endIter = priorityQueue.top()->getArcs().end();
 
 			for (; iter != endIter; iter++) {
-				// adds the weight of the top of the queue to the weight of the the arc that it is looking at
 				float distC = priorityQueue.top()->getCost() + (*iter).getWeight();
 
-				// if this is less than the node weight of the node it is looking at
 				if (distC < (*iter).getNode()->getCost()) {
 					(*iter).getNode()->setCost(distC);
-
-					// sets the top of the queue to be the previous node of this node
 					(*iter).getNode()->setPrevious(priorityQueue.top());
 				}
 
 				if ((*iter).getNode()->getMarked() == false) {
-					// mark the node and add it to the queue - puts priority on the shortest path
 					priorityQueue.push((*iter).getNode());
 					(*iter).getNode()->setMarked(true);
 				}
@@ -130,7 +131,7 @@ void AStar::ucs(Node* start, Node* dest, std::vector<Node*>& path) {
 				
 						while (temp != start) {
 							path.push_back(temp);
-							temp = temp->getPrevious(); // goes back to the previous node until it reaches the initial node
+							temp = temp->getPrevious();
 						}
 						path.push_back(start);
 					}
@@ -140,12 +141,23 @@ void AStar::ucs(Node* start, Node* dest, std::vector<Node*>& path) {
 		}
 	}
 
-	// resets nodes
-	for (int i = 0; i < m_nodeLayout.getNoOfNodes() - 1; i++) {
-		m_nodeLayout.getNodes()[i]->setMarked(false);
+	for (int i = 0; i < m_nodeLayout->getNoOfNodes() - 1; i++) {
+		m_nodeLayout->getNodes()[i]->setMarked(false);
 	}
 }
 
-NodeLayout& AStar::getLayout() {
+float AStar::magnitude(Vector v1, Vector v2) {
+	return sqrt(((v2.x - v1.x) * (v2.x - v1.x)) + ((v2.y - v1.y) * (v2.y - v1.y)));
+}
+
+NodeLayout* AStar::getLayout() {
 	return m_nodeLayout;
+}
+
+void AStar::addPlayer(Player *player) {
+	m_player = player;
+}
+
+bool AStar::getChangedNode() {
+	return m_changedNode;
 }

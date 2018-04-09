@@ -1,6 +1,6 @@
 #include "NPC.h"
 
-NPC::NPC(Vector pos, int width, int height, SDL_Color colour, NodeLayout &layout, Vector* playerPos) {
+NPC::NPC(Vector pos, int width, int height, SDL_Color colour, AStar *aStar) {
 	m_pos = pos;
 
 	m_rect.x = (int)pos.x;
@@ -10,43 +10,39 @@ NPC::NPC(Vector pos, int width, int height, SDL_Color colour, NodeLayout &layout
 
 	m_colour = colour;
 
-	m_aStar = new AStar(layout);
+	m_aStar = aStar;
 
-	m_playerPos = playerPos;
-
-	calculatePath();
+	m_pathChangedNeeded = true;
 }
 
 void NPC::update(float deltaTime) {
 	if (!m_path.empty()) {
 		Vector vecToNextPoint = Vector{ m_path.at(0)->getPos().x - m_pos.x, m_path.at(0)->getPos().y - m_pos.y };
+
+		if (magnitude(vecToNextPoint) < 10) {
+			m_path.erase(m_path.begin());
+			vecToNextPoint = Vector{ m_path.at(0)->getPos().x - m_pos.x, m_path.at(0)->getPos().y - m_pos.y };
+		}
 	
 		normalise(vecToNextPoint);
 	
 		m_vel.x += vecToNextPoint.x * deltaTime;
 		m_vel.y += vecToNextPoint.y * deltaTime;
-	}
-	else {
-		calculatePath();
+
+		m_pos.x += m_vel.y;
+		m_pos.y += m_vel.y;
+
+		m_rect.x = m_pos.x;
+		m_rect.y = m_pos.y;
 	}
 }
 
 void NPC::calculatePath() {
-	int indexClosestToPlayer;
-	int indexClosestToNPC;
-
-	float closestDistPlayer = 99999;
+	int indexClosestToNPC = 0;
 	float closestDistNPC = 99999;
 
-	for (int i = 0; i < m_aStar->getLayout().getNoOfNodes() - 1; i++) {
-		float distPlayer = magnitude(m_aStar->getLayout().getNodes().at(i)->getPos(), (*m_playerPos));
-
-		if (distPlayer < closestDistPlayer) {
-			closestDistPlayer = distPlayer;
-			indexClosestToPlayer = i;
-		}
-
-		float distNPC = magnitude(m_aStar->getLayout().getNodes().at(i)->getPos(), m_pos);
+	for (int i = 0; i < m_aStar->getLayout()->getNoOfNodes(); i++) {
+		float distNPC = magnitude(m_aStar->getLayout()->getNodes().at(i)->getPos(), m_pos);
 
 		if (distNPC < closestDistNPC) {
 			closestDistNPC = distNPC;
@@ -54,7 +50,13 @@ void NPC::calculatePath() {
 		}
 	}
 
-	m_aStar->calculatePath(m_aStar->getLayout().getNodes().at(indexClosestToPlayer), m_aStar->getLayout().getNodes().at(indexClosestToNPC), m_path);
+	if (!m_path.empty()) {
+		m_path.clear();
+	}
+
+	m_aStar->calculatePath(m_aStar->getLayout()->getNodes().at(indexClosestToNPC), m_path);
+
+	m_pathChangedNeeded = false;
 }
 
 Vector NPC::getVel() {
@@ -82,4 +84,12 @@ float NPC::magnitude(Vector v) {
 
 float NPC::magnitude(Vector v1, Vector v2) {
 	return sqrt(((v2.x - v1.x) * (v2.x - v1.x)) + ((v2.y - v1.y) * (v2.y - v1.y)));
+}
+
+bool NPC::getPathChangeNeeded() {
+	return m_pathChangedNeeded;
+}
+
+void NPC::setPathChangeNeeded(bool needed) {
+	m_pathChangedNeeded = needed;
 }

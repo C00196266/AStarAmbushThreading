@@ -1,10 +1,5 @@
 #include "Node.h"
 
-//Node::Node(Vector pos, int id) {
-//	m_pos = pos;
-//	m_id = id;
-//}
-
 Node::Node(Vector pos, std::string id) {
 	m_pos = pos;
 	m_id = id;
@@ -28,10 +23,6 @@ void Node::addArc(Node *n) {
 Vector Node::getPos() {
 	return m_pos;
 }
-
-//int Node::getID() {
-//	return m_id;
-//}
 
 std::string Node::getID() {
 	return m_id;

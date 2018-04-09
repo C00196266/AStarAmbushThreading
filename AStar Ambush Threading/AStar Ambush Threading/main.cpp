@@ -12,6 +12,8 @@ int main(int argc, char* argv[]) {
 
 	SDL_Thread* threadA = SDL_CreateThread(collisions, "Thread A", (void*)"Thread A");
 	SDL_Thread* threadB = SDL_CreateThread(collisions, "Thread B", (void*)"Thread B");
+	SDL_Thread* threadC = SDL_CreateThread(pathing, "Thread C", (void*)"Thread C");
+	SDL_Thread* threadD = SDL_CreateThread(pathing, "Thread D", (void*)"Thread D");
 
 	bool running = true;
 

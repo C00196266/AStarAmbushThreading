@@ -10,9 +10,12 @@
 // these need to be global, due to SDL threads taking C style functions as arguments, as opposed to C++ member functions
 
 extern int collisions(void*);
-extern SDL_sem* lock;
-extern int wallData;
-extern int npcData;
+extern int pathing(void*);
+extern SDL_sem* collisionLock;
+extern SDL_sem* pathingLock;
+extern int wallCollisionIndex;
+extern int npcCollisionIndex;
+extern int npcPathingIndex;
 extern Player* player;
 extern std::vector<Tile*>* tiles;
 extern std::vector<NPC*>* npcs;
@@ -31,6 +34,7 @@ private:
 
 	Player m_player;
 
+	AStar* m_aStar;
 	NodeLayout m_layout;
 
 	void setupWorld();
