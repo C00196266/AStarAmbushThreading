@@ -19,16 +19,16 @@ void Player::update(float deltaTime) {
 	m_vel = { 0, 0 };
 
 	if (m_listener->pressedA || m_listener->pressedLeft) {
-		m_vel.x = -50 * deltaTime;
+		m_vel.x = -30 * deltaTime;
 	}
 	if (m_listener->pressedD || m_listener->pressedRight) {
-		m_vel.x = 50 * deltaTime;
+		m_vel.x = 30 * deltaTime;
 	}
 	if (m_listener->pressedW || m_listener->pressedUp) {
-		m_vel.y = -50 * deltaTime;
+		m_vel.y = -30 * deltaTime;
 	}
 	if (m_listener->pressedS || m_listener->pressedDown) {
-		m_vel.y = 50 * deltaTime;
+		m_vel.y = 30 * deltaTime;
 	}
 
 	m_pos.x += m_vel.x;

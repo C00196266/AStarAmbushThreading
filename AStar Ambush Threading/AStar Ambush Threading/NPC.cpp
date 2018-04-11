@@ -29,8 +29,10 @@ void NPC::update(float deltaTime) {
 		m_vel.x += vecToNextPoint.x * deltaTime;
 		m_vel.y += vecToNextPoint.y * deltaTime;
 
-		m_pos.x += m_vel.y;
-		m_pos.y += m_vel.y;
+		//m_pos.x += m_vel.y;
+		//m_pos.y += m_vel.y;
+		m_pos.x -= 0.1;
+		m_pos.y -= 0.1;
 
 		m_rect.x = m_pos.x;
 		m_rect.y = m_pos.y;

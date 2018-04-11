@@ -17,13 +17,17 @@ extern int wallCollisionIndex;
 extern int npcCollisionIndex;
 extern int npcPathingIndex;
 extern Player* player;
+//extern float* delta_time;
 extern std::vector<Tile*>* tiles;
 extern std::vector<NPC*>* npcs;
 
 class World {
 public:
 	World() {}
-	World(EventListener *listener);
+	World(EventListener *listener, float *deltaTime);
+
+	void collisions(int wallIndex);
+	void updatePlayer();
 
 	void update(float deltaTime);
 	void draw(SDL_Renderer *renderer);
@@ -32,10 +36,15 @@ private:
 	std::vector<Tile*> m_tiles;
 	std::vector<NPC*> m_NPCs;
 
+	float* m_deltaTime;
+
 	Player m_player;
 
 	AStar* m_aStar;
 	NodeLayout m_layout;
 
+	int m_size;
+
 	void setupWorld();
+
 };

@@ -65,21 +65,12 @@ std::list<Arc>& Node::getArcs() {
 }
 
 void Node::draw(SDL_Renderer *renderer) {
-	//SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-	//SDL_RenderDrawPoint(renderer, m_pos.x, m_pos.y);
-	//
-	//SDL_SetRenderDrawColor(renderer, 255, 0, 140, 255);
-	//
-	//for (std::list<Arc>::iterator i = m_arcs.begin(); i != m_arcs.end(); i++) {
-	//	SDL_RenderDrawLine(renderer, m_pos.x, m_pos.y, (*i).getNode()->getPos().x, (*i).getNode()->getPos().y);
-	//}
-
 	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-	SDL_RenderDrawPoint(renderer, m_pos.x + 10, m_pos.y + 10);
+	SDL_RenderDrawPoint(renderer, m_pos.x + 3, m_pos.y + 3);
 
 	SDL_SetRenderDrawColor(renderer, 255, 0, 140, 255);
 
 	for (std::list<Arc>::iterator i = m_arcs.begin(); i != m_arcs.end(); i++) {
-		SDL_RenderDrawLine(renderer, m_pos.x + 10, m_pos.y + 10, (*i).getNode()->getPos().x + 10, (*i).getNode()->getPos().y + 10);
+		SDL_RenderDrawLine(renderer, m_pos.x + 3, m_pos.y + 3, (*i).getNode()->getPos().x + 3, (*i).getNode()->getPos().y + 3);
 	}
 }
