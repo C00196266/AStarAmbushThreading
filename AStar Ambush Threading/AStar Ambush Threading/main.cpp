@@ -86,13 +86,19 @@ int worker(void*) {
 
 		for (int i = threadID; i < theWorld->getNPCs().size(); i += numberOfWorkerThreads) {
 			theWorld->updateNPC(i);
+
+			SDL_SemWait(lock);
+
+			theWorld->npcCollisions(i);
+
+			SDL_SemPost(lock);
 		}
 	
 		for (int i = threadID; i < theWorld->getTiles().size(); i += numberOfWorkerThreads) {
 			// locked because if not, it may detect colliding with multiple tiles at the same time and end up pushing itself away from the wall
 			SDL_SemWait(lock);
 
-			theWorld->collisions(i);
+			theWorld->wallCollisions(i);
 
 			SDL_SemPost(lock);
 		}

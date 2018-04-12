@@ -22,9 +22,8 @@ void AStar::update() {
 		}
 	}
 
-	if (m_nodeLayout->getNodes().at(m_nodeNearestToPLayer) != m_start) {
-		std::cout << "NOP" << std::endl;
-		m_start = m_nodeLayout->getNodes().at(m_nodeNearestToPLayer);
+	if (m_nodeLayout->getNodes().at(indexClosestToPlayer) != m_start) {
+		m_start = m_nodeLayout->getNodes().at(indexClosestToPlayer);
 		m_changedNode = true;
 	}
 }
@@ -122,7 +121,7 @@ void AStar::ucs(Node *start, Node *dest, std::vector<Node*>& path) {
 
 		bool destFound = false;
 
-		while (priorityQueue.size() != 0 && priorityQueue.top() != dest && destFound == false) {
+		while (priorityQueue.size() != 0 && priorityQueue.top() != dest)  {//  && destFound == false) {
 			auto iter = priorityQueue.top()->getArcs().begin();
 			auto endIter = priorityQueue.top()->getArcs().end();
 

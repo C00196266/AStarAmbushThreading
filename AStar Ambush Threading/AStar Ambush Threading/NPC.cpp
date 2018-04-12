@@ -17,53 +17,57 @@ NPC::NPC(Vector pos, int width, int height, SDL_Color colour, AStar *aStar) {
 
 void NPC::update(float deltaTime) {
 	if (!m_path.empty()) {
-		Vector vecToNextPoint = Vector{ m_path.at(0)->getPos().x - m_pos.x, m_path.at(0)->getPos().y - m_pos.y };
+		if (m_path.size() < 500) {
+			Vector vecToNextPoint = Vector{ m_path.at(0)->getPos().x - m_pos.x, m_path.at(0)->getPos().y - m_pos.y };
 
-		float dist = magnitude(vecToNextPoint);
-		float speed = 0;
+			float dist = magnitude(vecToNextPoint);
+			float speed = 0;
 
-		if (dist < 15) {
-			m_path.erase(m_path.begin());
-
-			for (std::list<Arc>::iterator i = m_path.at(0)->getArcs().begin(); i != m_path.at(0)->getArcs().end(); i++) {
-				(*i).getCorrespondingArc()->decrementWeight();
+			if (dist < 15) {
+				for (std::list<Arc>::iterator i = m_path.at(0)->getArcs().begin(); i != m_path.at(0)->getArcs().end(); i++) {
+					(*i).getCorrespondingArc()->decrementWeight();
+				}
+				m_path.erase(m_path.begin());
 			}
-		}
-		else if (dist > 40) {
-			speed = 0.2;
+			else if (dist > 40) {
+				speed = 0.2;
+			}
+			else {
+				speed = 0.2 * (dist / 20);
+			}
+
+			normalise(vecToNextPoint);
+
+			vecToNextPoint.x *= speed;
+			vecToNextPoint.y *= speed;
+
+			m_accel.x = vecToNextPoint.x - (m_vel.x / 2);
+			m_accel.y = vecToNextPoint.y - (m_vel.y / 2);
+
+			if (magnitude(m_accel) > 2) {
+				normalise(m_accel);
+				m_accel.x *= 2;
+				m_accel.y *= 2;
+			}
+
+			m_vel.x += m_accel.x * deltaTime;
+			m_vel.y += m_accel.y * deltaTime;
+
+			if (magnitude(m_vel) > 0.2) {
+				normalise(m_vel);
+				m_vel.x *= 0.2;
+				m_vel.y *= 0.2;
+			}
+
+			m_pos.x += m_vel.x;
+			m_pos.y += m_vel.y;
+
+			m_rect.x = m_pos.x;
+			m_rect.y = m_pos.y;
 		}
 		else {
-			speed = 0.2 * (dist / 20);
+			calculatePath();
 		}
-
-		normalise(vecToNextPoint);
-
-		vecToNextPoint.x *= speed;
-		vecToNextPoint.y *= speed;
-
-		m_accel.x = vecToNextPoint.x - (m_vel.x / 2);
-		m_accel.y = vecToNextPoint.y - (m_vel.y / 2);
-
-		if (magnitude(m_accel) > 2) {
-			normalise(m_accel);
-			m_accel.x *= 2;
-			m_accel.y *= 2;
-		}
-
-		m_vel.x += m_accel.x * deltaTime;
-		m_vel.y += m_accel.y * deltaTime;
-
-		if (magnitude(m_vel) > 0.2) {
-			normalise(m_vel);
-			m_vel.x *= 0.2;
-			m_vel.y *= 0.2;
-		}
-
-		m_pos.x += m_vel.x;
-		m_pos.y += m_vel.y;
-
-		m_rect.x = m_pos.x;
-		m_rect.y = m_pos.y;
 	}
 }
 
@@ -80,14 +84,15 @@ void NPC::calculatePath() {
 		}
 	}
 
-	if (!m_path.empty()) {
-		//while (m_path.size() != 0) {
-		//	for (std::list<Arc>::iterator i = m_path.at(0)->getArcs().begin(); i != m_path.at(0)->getArcs().end(); i++) {
-		//		(*i).decrementWeight();
-		//		m_path.erase(m_path.begin());
-		//	}
-		//}
-
+	if (m_path.size() < 500) {
+		while (!m_path.empty()) {
+			for (std::list<Arc>::iterator i = m_path.at(0)->getArcs().begin(); i != m_path.at(0)->getArcs().end(); i++) {
+				(*i).decrementWeight();
+			}
+			m_path.erase(m_path.begin());
+		}
+	}
+	else {
 		m_path.clear();
 	}
 

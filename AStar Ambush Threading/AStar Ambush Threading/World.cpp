@@ -12,7 +12,7 @@ World::World(EventListener *listener, float *deltaTime, SDL_Renderer *renderer) 
 	m_player = Player{ Vector{ 50, 420 },  m_size, m_size, SDL_Color{ 100, 100, 200, 255 }, listener };
 	m_aStar->addPlayer(&m_player);
 
-	for (int i = 0; i < 1; i++) {
+	for (int i = 0; i < 500; i++) {
 		m_NPCs.push_back(new NPC(Vector{ 600, 400 }, m_size, m_size, SDL_Color{ 200, 100, 100, 255 }, m_aStar));
 	}
 
@@ -32,7 +32,7 @@ void World::updateNPC(int index) {
 	m_NPCs.at(index)->update(*m_deltaTime);
 }
 
-void World::collisions(int index) {
+void World::wallCollisions(int index) {
 	SDL_Rect holder = { 0, 0, 0, 0 };
 
 	if (SDL_IntersectRect(&m_player.getRect(), &m_tiles.at(index)->getRect(), &holder)) {
@@ -77,6 +77,14 @@ void World::collisions(int index) {
 				m_NPCs.at(i)->setVel(0, m_NPCs.at(i)->getVel().y);
 			}
 		}
+	}
+}
+
+void World::npcCollisions(int index) {
+	SDL_Rect holder = { 0, 0, 0, 0 };
+
+	if (SDL_IntersectRect(&m_player.getRect(), &m_NPCs.at(index)->getRect(), &holder)) {
+		std::cout << "collision" << std::endl;
 	}
 }
 

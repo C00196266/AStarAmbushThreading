@@ -12,7 +12,8 @@ public:
 	World() {}
 	World(EventListener *listener, float *deltaTime, SDL_Renderer *renderer);
 
-	void collisions(int wallIndex);
+	void wallCollisions(int wallIndex);
+	void npcCollisions(int npcIndex);
 	void updatePlayer();
 	void updateAStar();
 	void updateNPC(int index);
