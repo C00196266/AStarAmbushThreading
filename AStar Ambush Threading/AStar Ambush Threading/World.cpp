@@ -18,6 +18,7 @@ World::World(EventListener *listener, float *deltaTime, SDL_Renderer *renderer) 
 
 	m_deltaTime = deltaTime;
 	m_renderer = renderer;
+	m_eventListener = listener;
 }
 
 void World::updatePlayer() {
@@ -100,7 +101,12 @@ void World::draw(SDL_Renderer *renderer) {
 	for (int i = 0; i < m_tiles.size(); i++) {
 		m_tiles.at(i)->draw(renderer);
 	}
-	
+
+	// hold to show the nodes and arcs being drawn
+	if (m_eventListener->pressedSpace == true) {
+		m_aStar->getLayout()->draw(renderer);
+	}
+
 	for (int i = 0; i < m_NPCs.size(); i++) {
 		m_NPCs.at(i)->draw(renderer);
 	}

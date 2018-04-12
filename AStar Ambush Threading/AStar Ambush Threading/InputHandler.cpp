@@ -41,6 +41,10 @@ void InputHandler::handleInput(SDL_Event *e) {
 				case SDLK_DOWN:
 					m_eventListener->pressedDown = true;
 					break;
+
+				case SDLK_SPACE:
+					m_eventListener->pressedSpace = true;
+					break;
 				}
 				break;
 			}
@@ -78,6 +82,10 @@ void InputHandler::handleInput(SDL_Event *e) {
 
 				case SDLK_DOWN:
 					m_eventListener->pressedDown = false;
+					break;
+
+				case SDLK_SPACE:
+					m_eventListener->pressedSpace = false;
 					break;
 				}
 				break;

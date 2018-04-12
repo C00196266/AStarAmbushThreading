@@ -10,4 +10,5 @@ public:
 	bool pressedRight = false;
 	bool pressedUp = false;
 	bool pressedDown = false;
+	bool pressedSpace = false;
 };

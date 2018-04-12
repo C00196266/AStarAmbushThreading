@@ -37,5 +37,7 @@ private:
 
 	int m_size;
 
+	EventListener* m_eventListener;
+
 	void setupWorld();
 };
