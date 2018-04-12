@@ -12,7 +12,6 @@ public:
 	Node(Vector pos, std::string id);
 
 	void addArc(Node *n);
-	float calculateArcWeight(Vector otherNodePos);
 
 	Vector getPos();
 
@@ -34,6 +33,10 @@ public:
 	std::list<Arc>& getArcs();
 
 	void draw(SDL_Renderer *renderer);
+
+	void willBeVisited();
+	void hasBeenVisited();
+	void reset();
 
 private:
 	//int m_id;

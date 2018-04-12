@@ -20,6 +20,7 @@ public:
 
 private:
 	Vector m_vel;
+	Vector m_accel;
 
 	AStar* m_aStar;
 

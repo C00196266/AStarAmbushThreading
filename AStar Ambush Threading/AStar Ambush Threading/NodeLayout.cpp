@@ -33,12 +33,18 @@ void NodeLayout::addArcs() {
 		if ((i + m_nodesPerLine) < m_nodes.size()) {
 			m_nodes.at(i)->addArc(m_nodes.at(i + m_nodesPerLine));
 			m_nodes.at(i + m_nodesPerLine)->addArc(m_nodes.at(i));
+
+			m_nodes.at(i)->getArcs().back().setCorrespondingArc(&m_nodes.at(i + m_nodesPerLine)->getArcs().back());
+			m_nodes.at(i + m_nodesPerLine)->getArcs().back().setCorrespondingArc(&m_nodes.at(i)->getArcs().back());
 		}
 
 		if ((i + 1) < m_nodes.size()) {
 			if (i < (m_nodesPerLine * col) - 1) {
 				m_nodes.at(i)->addArc(m_nodes.at(i + 1));
 				m_nodes.at(i + 1)->addArc(m_nodes.at(i));
+
+				m_nodes.at(i)->getArcs().back().setCorrespondingArc(&m_nodes.at(i + 1)->getArcs().back());
+				m_nodes.at(i + 1)->getArcs().back().setCorrespondingArc(&m_nodes.at(i)->getArcs().back());
 			}
 		}
 
@@ -46,12 +52,18 @@ void NodeLayout::addArcs() {
 			if (i < (m_nodesPerLine * col) - 1) {
 				m_nodes.at(i)->addArc(m_nodes.at(i + 1 + m_nodesPerLine));
 				m_nodes.at(i + 1 + m_nodesPerLine)->addArc(m_nodes.at(i));
+
+				m_nodes.at(i)->getArcs().back().setCorrespondingArc(&m_nodes.at(i + 1 + m_nodesPerLine)->getArcs().back());
+				m_nodes.at(i + 1 + m_nodesPerLine)->getArcs().back().setCorrespondingArc(&m_nodes.at(i)->getArcs().back());
 			}
 		}
 
 		if ((i + 1) - m_nodesPerLine >= 0) {
 			m_nodes.at(i)->addArc(m_nodes.at((i + 1) - m_nodesPerLine));
 			m_nodes.at((i + 1) - m_nodesPerLine)->addArc(m_nodes.at(i));
+
+			m_nodes.at(i)->getArcs().back().setCorrespondingArc(&m_nodes.at((i + 1) - m_nodesPerLine)->getArcs().back());
+			m_nodes.at((i + 1) - m_nodesPerLine)->getArcs().back().setCorrespondingArc(&m_nodes.at(i)->getArcs().back());
 		}
 	}
 }

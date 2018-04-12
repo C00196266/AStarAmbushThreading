@@ -7,36 +7,27 @@
 #include "AStar.h"
 #include "NPC.h"
 
-// these need to be global, due to SDL threads taking C style functions as arguments, as opposed to C++ member functions
-
-extern int collisions(void*);
-extern int pathing(void*);
-extern SDL_sem* collisionLock;
-extern SDL_sem* pathingLock;
-extern int wallCollisionIndex;
-extern int npcCollisionIndex;
-extern int npcPathingIndex;
-extern Player* player;
-//extern float* delta_time;
-extern std::vector<Tile*>* tiles;
-extern std::vector<NPC*>* npcs;
-
 class World {
 public:
 	World() {}
-	World(EventListener *listener, float *deltaTime);
+	World(EventListener *listener, float *deltaTime, SDL_Renderer *renderer);
 
 	void collisions(int wallIndex);
 	void updatePlayer();
+	void updateAStar();
+	void updateNPC(int index);
 
-	void update(float deltaTime);
 	void draw(SDL_Renderer *renderer);
+
+	std::vector<Tile*> getTiles();
+	std::vector<NPC*> getNPCs();
 
 private:
 	std::vector<Tile*> m_tiles;
 	std::vector<NPC*> m_NPCs;
 
 	float* m_deltaTime;
+	SDL_Renderer* m_renderer;
 
 	Player m_player;
 
@@ -46,5 +37,4 @@ private:
 	int m_size;
 
 	void setupWorld();
-
 };

@@ -23,6 +23,7 @@ void AStar::update() {
 	}
 
 	if (m_nodeLayout->getNodes().at(m_nodeNearestToPLayer) != m_start) {
+		std::cout << "NOP" << std::endl;
 		m_start = m_nodeLayout->getNodes().at(m_nodeNearestToPLayer);
 		m_changedNode = true;
 	}
@@ -48,7 +49,9 @@ void AStar::calculatePath(Node *dest, std::vector<Node*>& path) {
 
 		priorityQueue.push(m_start);
 
-		while (priorityQueue.size() != 0 && priorityQueue.top() != dest) {
+		bool destFound = false;
+
+		while (priorityQueue.size() != 0 && priorityQueue.top() != dest && destFound == false) {
 			auto iter = priorityQueue.top()->getArcs().begin();
 			auto endIter = priorityQueue.top()->getArcs().end();
 
@@ -75,9 +78,21 @@ void AStar::calculatePath(Node *dest, std::vector<Node*>& path) {
 
 						while (temp != m_start) {
 							path.push_back(temp);
+
+							// increment weights to this node for a*mbush
+							for (std::list<Arc>::iterator i = temp->getArcs().begin(); i != temp->getArcs().end(); i++) {
+								(*i).getCorrespondingArc()->incrementWeight();
+							}
+
 							temp = temp->getPrevious();
 						}
 						path.push_back(m_start);
+
+						for (std::list<Arc>::iterator i = m_start->getArcs().begin(); i != m_start->getArcs().end(); i++) {
+							(*i).getCorrespondingArc()->incrementWeight();
+						}
+
+						destFound = true;
 					}
 				}
 			}
@@ -91,6 +106,7 @@ void AStar::calculatePath(Node *dest, std::vector<Node*>& path) {
 	}
 }
 
+// used for gettting heuristic
 void AStar::ucs(Node *start, Node *dest, std::vector<Node*>& path) {
 	if (start != NULL) {
 		for (int i = 0; i < m_nodeLayout->getNoOfNodes() - 1; i++) {
@@ -104,7 +120,9 @@ void AStar::ucs(Node *start, Node *dest, std::vector<Node*>& path) {
 
 		priorityQueue.push(start);
 
-		while (priorityQueue.size() != 0 && priorityQueue.top() != dest) {
+		bool destFound = false;
+
+		while (priorityQueue.size() != 0 && priorityQueue.top() != dest && destFound == false) {
 			auto iter = priorityQueue.top()->getArcs().begin();
 			auto endIter = priorityQueue.top()->getArcs().end();
 
@@ -134,6 +152,8 @@ void AStar::ucs(Node *start, Node *dest, std::vector<Node*>& path) {
 							temp = temp->getPrevious();
 						}
 						path.push_back(start);
+
+						destFound = true;
 					}
 				}
 			}

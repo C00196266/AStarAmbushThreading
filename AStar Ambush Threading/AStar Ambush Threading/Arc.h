@@ -11,9 +11,18 @@ public:
 	Node* getNode();
 
 	void setWeight(float w);
-	float getWeight();
+	int getWeight();
+
+	void setCorrespondingArc(Arc* arc);
+	Arc* getCorrespondingArc();
+
+	void incrementWeight();
+	void decrementWeight();
+	void resetWeight();
 
 private:
 	Node* m_node;
+	Arc* m_correspondingArc;
 	int m_weight;
+	int m_initialWeight;
 };
