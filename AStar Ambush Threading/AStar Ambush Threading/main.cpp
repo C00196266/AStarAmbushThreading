@@ -89,6 +89,7 @@ int worker(void*) {
 
 			SDL_SemWait(lock);
 
+			// cout tanks framerate, comment it in and out to show collisions
 			theWorld->npcCollisions(i);
 
 			SDL_SemPost(lock);

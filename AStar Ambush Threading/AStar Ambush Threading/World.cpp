@@ -84,7 +84,7 @@ void World::npcCollisions(int index) {
 	SDL_Rect holder = { 0, 0, 0, 0 };
 
 	if (SDL_IntersectRect(&m_player.getRect(), &m_NPCs.at(index)->getRect(), &holder)) {
-		std::cout << "collision" << std::endl;
+		//std::cout << "collision" << std::endl;
 	}
 }
 
